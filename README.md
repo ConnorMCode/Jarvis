@@ -36,10 +36,13 @@ The AI assistant uses **OpenAI function calling** to:
 ├── db.py                # Database layer with JSON storage & query functions
 ├── data.py              # Data model definitions (Note, ToDo, Goal, Event)
 ├── utils.py             # Utility functions for data management
-├── db.json              # Local data storage (JSON)
+├── db.example.json      # Database structure template (user-specific data not tracked)
+├── .env.example         # Environment variables template
 ├── requirements.txt     # Python dependencies
 └── README.md            # This file
 ```
+
+**Note:** `db.json` (your local data) and `.env` (your credentials) are excluded from version control via `.gitignore`.
 
 ## Quick Start
 
@@ -219,7 +222,3 @@ The database layer handles serialization of Python objects to JSON:
 - DateTime objects are converted to ISO format strings
 - Relationships are preserved via IDs
 - Future database migration only requires changing the Database class
-
-## License
-
-[Your License Here]
