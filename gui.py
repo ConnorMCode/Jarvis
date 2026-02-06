@@ -13,6 +13,7 @@ class JarvisGUI:
         
         self.debug = False
         self.response_thread = None
+        self.conversation_history = []  # Maintain conversation context
         
         # Configure styles
         self.setup_styles()
@@ -30,8 +31,11 @@ class JarvisGUI:
         title_label.configure(font=("Segoe UI", 14, "bold"))
         
         debug_button = ttk.Button(header_frame, text="Debug: OFF", command=self.toggle_debug, width=12)
-        debug_button.pack(side=tk.RIGHT)
+        debug_button.pack(side=tk.RIGHT, padx=(5, 0))
         self.debug_button = debug_button
+        
+        clear_history_button = ttk.Button(header_frame, text="Clear History", command=self.clear_history, width=12)
+        clear_history_button.pack(side=tk.RIGHT)
         
         # Chat display area
         display_frame = ttk.Frame(main_frame)
@@ -125,6 +129,11 @@ class JarvisGUI:
         self.debug_button.config(text=f"Debug: {status}")
         self.add_message(f"Debug mode {status}\n", "info")
     
+    def clear_history(self):
+        """Clear conversation history"""
+        self.conversation_history = []
+        self.add_message("Conversation history cleared.\n", "info")
+    
     def send_message(self):
         """Send message and get AI response"""
         user_input = self.input_field.get().strip()
@@ -155,7 +164,11 @@ class JarvisGUI:
             if self.debug:
                 self.add_message("\n[DEBUG] Sending query to AI...", "debug")
             
-            ai_message, usage = ask_ai(user_input, debug=self.debug)
+            ai_message, usage = ask_ai(user_input, debug=self.debug, messages_history=self.conversation_history)
+            
+            # Add this exchange to conversation history for context
+            self.conversation_history.append({"role": "user", "content": user_input})
+            self.conversation_history.append({"role": "assistant", "content": ai_message})
             
             # Add AI response to display in main thread
             self.root.after(0, self._display_ai_response, ai_message, usage)
