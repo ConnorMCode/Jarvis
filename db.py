@@ -61,8 +61,7 @@ class Database:
             
             # Load events
             for event_data in data.get('events', []):
-                event_data['start'] = datetime.fromisoformat(event_data['start'])
-                event_data['end'] = datetime.fromisoformat(event_data['end'])
+                event_data['date'] = datetime.fromisoformat(event_data['date'])
                 # Remove old attachment field if it exists (migration)
                 event_data.pop('attached_to_goal_id', None)
                 self.events.append(Event(**event_data))
@@ -182,8 +181,7 @@ class Database:
         return {
             'id': event.id,
             'title': event.title,
-            'start': event.start.isoformat(),
-            'end': event.end.isoformat(),
+            'date': event.date.isoformat(),
             'description': event.description,
             'tags': event.tags,
         }
@@ -367,12 +365,12 @@ class Database:
         self.save()
         return goal
     
-    def add_event(self, title: str, start: datetime, end: datetime, description: str = "",
+    def add_event(self, title: str, date: datetime, description: str = "",
                   tags: Optional[List[str]] = None) -> Event:
         """Add a new event."""
         event_id = max([e.id for e in self.events], default=0) + 1
         event = Event(
-            id=event_id, title=title, start=start, end=end, description=description,
+            id=event_id, title=title, date=date, description=description,
             tags=self._normalize_tags(tags or [])
         )
         self.events.append(event)

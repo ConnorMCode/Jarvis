@@ -59,25 +59,22 @@ def add_goal(title: str, description: str = "", priority: int = 3,
     print(f"✓ Added goal: {title} (ID: {goal.id})")
     return goal
 
-def add_event(title: str, start_date: str, end_date: str,
+def add_event(title: str, date: str,
               description: str = "", tags: Optional[List[str]] = None):
     """
     Add a new event.
     
     Args:
         title: Event title
-        start_date: ISO format datetime string
-        end_date: ISO format datetime string
+        date: ISO format datetime string
         description: Event description
         tags: List of tags
     """
-    start = datetime.fromisoformat(start_date)
-    end = datetime.fromisoformat(end_date)
+    event_date = datetime.fromisoformat(date)
     
     event = db.add_event(
         title=title,
-        start=start,
-        end=end,
+        date=event_date,
         description=description,
         tags=tags
     )

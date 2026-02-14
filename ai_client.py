@@ -154,13 +154,9 @@ TOOLS = [
                         "type": "string",
                         "description": "Event title"
                     },
-                    "start": {
+                    "date": {
                         "type": "string",
-                        "description": "Event start time in ISO format (e.g., 2026-02-08T14:00:00)"
-                    },
-                    "end": {
-                        "type": "string",
-                        "description": "Event end time in ISO format (e.g., 2026-02-08T15:00:00)"
+                        "description": "Event date in ISO format (e.g., 2026-02-08T14:00:00)"
                     },
                     "description": {
                         "type": "string",
@@ -172,7 +168,7 @@ TOOLS = [
                         "description": "Tags for the event (optional)"
                     }
                 },
-                "required": ["title", "start", "end"]
+                "required": ["title", "date"]
             }
         }
     },
@@ -437,7 +433,7 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "update_event",
-            "description": "Update an event's fields (title, description, start/end times, tags, etc). Preserves all links and notes.",
+            "description": "Update an event's fields (title, description, date, tags, etc). Preserves all links and notes.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -453,13 +449,9 @@ TOOLS = [
                         "type": "string",
                         "description": "New description (optional)"
                     },
-                    "start": {
+                    "date": {
                         "type": "string",
-                        "description": "New start time in ISO format (optional)"
-                    },
-                    "end": {
-                        "type": "string",
-                        "description": "New end time in ISO format (optional)"
+                        "description": "New date in ISO format (optional)"
                     },
                     "tags": {
                         "type": "array",
@@ -866,14 +858,11 @@ def execute_function(function_name: str, function_args: dict, debug: bool = Fals
         result = db.get_notes()
     elif function_name == "add_event":
         try:
-            start = function_args.get("start")
-            end = function_args.get("end")
-            start_dt = datetime.fromisoformat(start) if start else None
-            end_dt = datetime.fromisoformat(end) if end else None
+            date = function_args.get("date")
+            dt = datetime.fromisoformat(date) if date else None
             result = db.add_event(
                 title=function_args.get("title"),
-                start=start_dt,
-                end=end_dt,
+                date=dt,
                 description=function_args.get("description", ""),
                 tags=function_args.get("tags", [])
             )
@@ -989,16 +978,13 @@ def execute_function(function_name: str, function_args: dict, debug: bool = Fals
     elif function_name == "update_event":
         try:
             event_id = function_args.get("event_id")
-            start = function_args.get("start")
-            end = function_args.get("end")
-            start_dt = datetime.fromisoformat(start) if start else None
-            end_dt = datetime.fromisoformat(end) if end else None
+            date = function_args.get("date")
+            dt = datetime.fromisoformat(date) if date else None
             updated_event = db.update_event(
                 event_id=event_id,
                 title=function_args.get("title"),
                 description=function_args.get("description"),
-                start=start_dt,
-                end=end_dt,
+                date=dt,
                 tags=function_args.get("tags")
             )
             if updated_event:

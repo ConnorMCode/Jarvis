@@ -47,8 +47,7 @@ class Goal:
 class Event:
     id: int
     title: str
-    start: datetime
-    end: datetime
+    date: datetime
     description: str = ""
     tags: list[str] = field(default_factory=list)
 
